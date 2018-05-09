@@ -1,0 +1,53 @@
+[build-system]
+requires = [
+    'setuptools',
+    'wheel',
+]
+
+[tool.tidypy]
+exclude = [
+    'test/.*',
+    'build/.*',
+    'dist/.*',
+]
+vulture = {use = false}
+
+[tool.tidypy.pycodestyle]
+disabled = [
+    'W391',
+    'E731',
+]
+
+[tool.tidypy.pylint]
+disabled = [
+    'missing-docstring',
+    'trailing-newlines',
+]
+[tool.tidypy.pylint.options]
+max-args = 8
+min-public-methods = 0
+
+[tool.tidypy.pydocstyle]
+disabled = [
+    'D100', 'D101', 'D102', 'D103', 'D104', 'D105', 'D107',
+    'D200', 'D202', 'D203', 'D205', 'D212',
+    'D400', 'D401',
+]
+
+[tool.tidypy.pyflakes]
+disabled = [
+    'UnusedImport',
+    'ImportStarUsed',
+]
+
+[tool.tidypy.yamllint]
+disabled = [
+    'empty-lines',
+    'document-start',
+]
+
+[tool.tidypy.2to3]
+disabled = [
+    'future',
+]
+
