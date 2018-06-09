@@ -1,6 +1,6 @@
-******************
-extendy Change Log
-******************
+**********
+Change Log
+**********
 
 .. contents:: Releases
 

@@ -5,7 +5,6 @@ lint::
 	@pipenv run tidypy check
 
 test::
-	@pipenv run pip install --editable test/testpkg
 	@pipenv run coverage run --rcfile=setup.cfg --module py.test
 	@pipenv run coverage report --rcfile=setup.cfg
 
@@ -13,12 +12,16 @@ ci:: test
 	@pipenv run coveralls --rcfile=setup.cfg
 
 clean::
-	@rm -rf dist build .pytest_cache .coverage
+	@rm -rf dist build .pytest_cache .coverage docs/build
 
 build:: clean
-	@python setup.py sdist
-	@python setup.py bdist_wheel
+	@pipenv run python setup.py sdist
+	@pipenv run python setup.py bdist_wheel
+
+docs::
+	@rm -rf docs/build
+	@cd docs && pipenv run make html
 
 publish::
-	@twine upload dist/*
+	@pipenv run twine upload dist/*
 

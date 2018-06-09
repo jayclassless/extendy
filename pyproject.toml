@@ -9,6 +9,7 @@ exclude = [
     'test/.*',
     'build/.*',
     'dist/.*',
+    'docs/source/conf.py',
 ]
 vulture = {use = false}
 
@@ -49,5 +50,13 @@ disabled = [
 [tool.tidypy.2to3]
 disabled = [
     'future',
+]
+
+[tool.tidypy.rstlint.options]
+sphinx-extensions = [
+    'sphinx.ext.autodoc',
+]
+ignore-roles = [
+    'ref',
 ]
 

@@ -4,11 +4,14 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
+"5582fa6" = {path = "./test/testpkg", editable = true}
 "e1839a8" = {path = ".", editable = true}
 "coveralls" = "*"
 "pytest" = "*"
 "twine" = "*"
 "wheel" = "*"
 "tidypy" = "*"
+"Sphinx" = "*"
+"sphinx_rtd_theme" = "*"
 
 [packages]
