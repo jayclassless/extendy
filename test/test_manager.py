@@ -89,20 +89,27 @@ def test_by_name():
         assert man.find_by_name(extendy_testpkg.FooExtension, 'extendy_testpkg.DoesNotExist') is None
 
 
+def list_classes(classes):
+    return sorted([
+        '%s.%s' % (cls.__module__, cls.__name__)
+        for cls in classes
+    ])
+
+
 def test_by_module():
     man = Manager()
 
-    assert sorted(man.find_by_module(extendy_testpkg.FooExtension, 'extendy_testpkg')) == sorted([
-        extendy_testpkg.FooImplementation,
-        extendy_testpkg.AnotherFooImplementation,
-        extendy_testpkg.ThirdFooImplementation,
-    ])
+    assert list_classes(man.find_by_module(extendy_testpkg.FooExtension, 'extendy_testpkg')) == [
+        'extendy_testpkg.AnotherFooImplementation',
+        'extendy_testpkg.FooImplementation',
+        'extendy_testpkg.ThirdFooImplementation',
+    ]
 
-    assert sorted(man.find_by_module(extendy_testpkg.FooExtension, extendy_testpkg)) == sorted([
-        extendy_testpkg.FooImplementation,
-        extendy_testpkg.AnotherFooImplementation,
-        extendy_testpkg.ThirdFooImplementation,
-    ])
+    assert list_classes(man.find_by_module(extendy_testpkg.FooExtension, extendy_testpkg)) == [
+        'extendy_testpkg.AnotherFooImplementation',
+        'extendy_testpkg.FooImplementation',
+        'extendy_testpkg.ThirdFooImplementation',
+    ]
 
 
 def test_by_module_bad():
@@ -115,11 +122,11 @@ def test_by_module_bad():
 def test_by_module_prefix():
     man = Manager()
 
-    assert sorted(man.find_by_module_prefix(extendy_testpkg.FooExtension, 'extendy_testpkg')) == sorted([
-        extendy_testpkg.FooImplementation,
-        extendy_testpkg.AnotherFooImplementation,
-        extendy_testpkg.ThirdFooImplementation,
-    ])
+    assert list_classes(man.find_by_module_prefix(extendy_testpkg.FooExtension, 'extendy_testpkg')) == [
+        'extendy_testpkg.AnotherFooImplementation',
+        'extendy_testpkg.FooImplementation',
+        'extendy_testpkg.ThirdFooImplementation',
+    ]
 
 
 def test_by_path():
@@ -170,55 +177,54 @@ def test_find():
     assert man.find(extendy_testpkg.FooExtension, registered=False) == []
 
     with pytest.warns(ExtendyWarning, match='Could not load entry'):
-        assert sorted(man.find(
+        assert list_classes(man.find(
             extendy_testpkg.FooExtension,
             entry_points='extendytest',
-        )) == sorted([
-            RegisteredFoo,
-            extendy_testpkg.ThirdFooImplementation,
-        ])
+        )) == [
+            'extendy_testpkg.ThirdFooImplementation',
+            'test.test_manager.RegisteredFoo',
+        ]
 
-    actual = sorted(man.find(
+    list_classes(man.find(
         extendy_testpkg.FooExtension,
         paths=[os.path.join(os.path.dirname(__file__), 'testpkg/src/extendy_testpkg/stuff/')],
-    ))
-    assert sorted([clazz.__name__ for clazz in actual]) == sorted([
-        'RegisteredFoo',
-        'StuffBar',
-        'StuffBaz',
-        'StuffFoo',
-    ])
+    )) == [
+        'test.test_manager.RegisteredFoo',
+        'test.test_manager.StuffBar',
+        'test.test_manager.StuffBaz',
+        'test.test_manager.StuffFoo',
+    ]
 
-    assert sorted(man.find(
+    assert list_classes(man.find(
         extendy_testpkg.FooExtension,
         modules=extendy_testpkg,
-    )) == sorted([
-        RegisteredFoo,
-        extendy_testpkg.FooImplementation,
-        extendy_testpkg.AnotherFooImplementation,
-        extendy_testpkg.ThirdFooImplementation,
-    ])
+    )) == [
+        'extendy_testpkg.AnotherFooImplementation',
+        'extendy_testpkg.FooImplementation',
+        'extendy_testpkg.ThirdFooImplementation',
+        'test.test_manager.RegisteredFoo',
+    ]
 
-    assert sorted(man.find(
+    assert list_classes(man.find(
         extendy_testpkg.FooExtension,
         prefixes='extendy_',
-    )) == sorted([
-        RegisteredFoo,
-        extendy_testpkg.FooImplementation,
-        extendy_testpkg.AnotherFooImplementation,
-        extendy_testpkg.ThirdFooImplementation,
-    ])
+    )) == [
+        'extendy_testpkg.AnotherFooImplementation',
+        'extendy_testpkg.FooImplementation',
+        'extendy_testpkg.ThirdFooImplementation',
+        'test.test_manager.RegisteredFoo',
+    ]
 
-    assert sorted(man.find(
+    assert list_classes(man.find(
         extendy_testpkg.FooExtension,
         names='extendy_testpkg.AnotherFooImplementation',
-    )) == sorted([
-        RegisteredFoo,
-        extendy_testpkg.AnotherFooImplementation,
-    ])
+    )) == [
+        'extendy_testpkg.AnotherFooImplementation',
+        'test.test_manager.RegisteredFoo',
+    ]
 
     with pytest.warns(ExtendyWarning, match='Could not load entry'):
-        actual = sorted(man.find(
+        actual = list_classes(man.find(
             extendy_testpkg.FooExtension,
             entry_points='extendytest',
             paths=[os.path.join(os.path.dirname(__file__), 'testpkg/src/extendy_testpkg/stuff/')],
@@ -226,13 +232,13 @@ def test_find():
             prefixes='extendy_',
             names='extendy_testpkg.AnotherFooImplementation',
         ))
-    assert sorted([clazz.__name__ for clazz in actual]) == sorted([
-        'RegisteredFoo',
-        'StuffBar',
-        'StuffBaz',
-        'StuffFoo',
-        'FooImplementation',
-        'AnotherFooImplementation',
-        'ThirdFooImplementation',
-    ])
+    assert actual == [
+        'bar.StuffBar',
+        'baz.StuffBaz',
+        'extendy_testpkg.AnotherFooImplementation',
+        'extendy_testpkg.FooImplementation',
+        'extendy_testpkg.ThirdFooImplementation',
+        'foo.StuffFoo',
+        'test.test_manager.RegisteredFoo',
+    ]
 
