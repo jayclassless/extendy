@@ -1,13 +1,14 @@
 
 import os
 
-from collections import Iterable, defaultdict
+from collections import defaultdict
 from pkgutil import iter_modules
 from warnings import warn
 
 import pkg_resources
 
 from six import string_types, iteritems
+from six.moves.collections_abc import Iterable
 
 from .error import ExtendyError, ExtendyWarning
 
